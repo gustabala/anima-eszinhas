@@ -69,10 +69,10 @@ namespace AnimationFunctions
         float duration;
         uint bounceAmmount;
         float bounciness;
-        public BouncingAnimation(float duration, uint waveAmmount, float bounciness)
+        public BouncingAnimation(float duration, uint bounceAmmount, float bounciness)
         {
             this.duration = duration;
-            this.bounceAmmount = waveAmmount;
+            this.bounceAmmount = bounceAmmount;
             this.bounciness = MathF.Abs(bounciness);
         }
 
@@ -80,6 +80,25 @@ namespace AnimationFunctions
         {
             float wobbleFac = (bounceAmmount / duration) * MathF.PI * time;
             return Math.Abs(MathF.Sin(wobbleFac) / (wobbleFac + bounciness));
+        }
+    }
+
+    //Maps smoothing animation beetween 0 - 1
+    //Exponential smoothing
+    class SimpleSmoothing : IAnimation 
+    {
+        float duration;
+
+        public SimpleSmoothing(float duration) 
+        {
+            this.duration= duration;
+        }
+
+        public float GetState(float time) 
+        {
+            float q = 1 / duration;
+            float t2 = 3 * time * time;
+            return q * q * (t2 - (q * (2 / 3) * (t2 * time)));
         }
     }
 }
